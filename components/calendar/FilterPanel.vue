@@ -2,9 +2,7 @@
 <div class="md-layout-item md-size-20 filter">
 	<h1>Filter</h1>
 	<div v-if="seriesChips.length !== 0 || tracksChips.length !== 0" class="chips">
-		<h2>
-			Active Filters
-		</h2>
+		<h2>Active Filters</h2>
 		<div class="serieChipContainer">
 			<h3 v-if="seriesChips.length !== 0">
 				Series
@@ -41,7 +39,7 @@
 					:md-options="seriesArr.map(x=>({'id': x.id, 'name': x.name, 'toLowerCase': () => x.name.toLowerCase(), 'toString':() => x.name}))"
 					:md-fuzzy-search="false"
 				>
-					<label>Series</label>
+					<label class="autoLabel">Series</label>
 					<md-icon>keyboard_arrow_down</md-icon>
 					<template slot="md-autocomplete-item" slot-scope="{ item, term }">
 						<span class="color" :style="`background-color: ${item.color}`" />
@@ -63,7 +61,7 @@
 					:md-options="tracksArr.map(x=>({'id': x.id, 'name': x.name, 'toLowerCase': () => x.name.toLowerCase(), 'toString':() => x.name}))"
 					:md-fuzzy-search="false"
 				>
-					<label>Track</label>
+					<label class="autoLabel">Track</label>
 					<md-icon>keyboard_arrow_down</md-icon>
 					<template slot="md-autocomplete-item" slot-scope="{ item, term }">
 						<span class="color" :style="`background-color: ${item.color}`" />
@@ -81,12 +79,12 @@
 			</md-list-item>
 		</md-list>
 	</div>
-	<md-button
+	<!--<md-button
 		class="md-raised md-primary"
 		@click.native="toggleCurrentEvents()"
 	>
 		{{ showCurrentEventsLabel }}
-	</md-button>
+    </md-button>-->
 </div>
 </template>
 
@@ -142,6 +140,7 @@ export default {
             };
           }
         });
+        this.filterCalendar();
       }
     },
     selectedTracks: function(val) {
@@ -159,20 +158,29 @@ export default {
             };
           }
         });
+        this.filterCalendar();
       }
     }
   },
   methods: {
-    toggleCurrentEvents: function() {
-      this.$root.$emit('toggleCurrentEvents');
-    },
+    // toggleCurrentEvents: function() {
+    //   this.$root.$emit('toggleCurrentEvents');
+    // },
     removeSerieChip: function(serie, index) {
       this.seriesChips.splice(index, 1);
       this.seriesArr.push(serie);
+      this.filterCalendar();
     },
     removeTrackChip: function(track, index) {
       this.tracksChips.splice(index, 1);
       this.tracksArr.push(track);
+      this.filterCalendar();
+    },
+    filterCalendar: function() {
+      this.$root.$emit('filterCalendar', {
+        series: this.seriesChips,
+        tracks: this.tracksChips
+      });
     }
   }
 };
@@ -205,6 +213,7 @@ export default {
   h1 {
     font-weight: 600;
     padding-bottom: 10px;
+    margin-bottom: 0;
   }
 
   h2,
@@ -221,12 +230,25 @@ export default {
   .md-list {
     background-color: transparent;
   }
-}
 
-.md-chip.md-theme-default {
-  background-color: transparent;
-  border-color: white;
-  border-width: 1px;
-  border-style: solid;
+  .md-chip.md-theme-default {
+    background-color: transparent;
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  .md-field {
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: white;
+  }
+
+  .autoLabel {
+    color: white !important;
+    font-size: 0.75vw !important;
+  }
 }
 </style>
