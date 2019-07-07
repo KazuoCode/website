@@ -1,15 +1,48 @@
 <template>
 <div class="md-layout-item md-size-20 filter">
 	<h1>Filter</h1>
+	<div v-if="seriesChips.length !== 0 || tracksChips.length !== 0" class="chips">
+		<h2>
+			Active Filters
+		</h2>
+		<div class="serieChipContainer">
+			<h3 v-if="seriesChips.length !== 0">
+				Series
+			</h3>
+			<md-chip
+				v-for="(serie, index) in seriesChips"
+				:key="serie.id"
+				md-deletable
+				@md-delete="removeSerieChip(serie, index)"
+			>
+				{{ serie.name }}
+			</md-chip>
+		</div>
+		<div class="trackChipContainer">
+			<h3 v-if="tracksChips.length !== 0">
+				Tracks
+			</h3>
+			<md-chip
+				v-for="(track, index) in tracksChips"
+				:key="track.id"
+				md-deletable
+				@md-delete="removeTrackChip(track, index)"
+			>
+				{{ track.name }}
+			</md-chip>
+		</div>
+	</div>
+
 	<div class="list">
 		<md-list :md-expand-single="expandSingle">
 			<md-list-item>
 				<md-autocomplete
 					v-model="selectedSeries"
-					:md-options="seriesArr"
+					:md-options="seriesArr.map(x=>({'id': x.id, 'name': x.name, 'toLowerCase': () => x.name.toLowerCase(), 'toString':() => x.name}))"
 					:md-fuzzy-search="false"
 				>
 					<label>Series</label>
+					<md-icon>keyboard_arrow_down</md-icon>
 					<template slot="md-autocomplete-item" slot-scope="{ item, term }">
 						<span class="color" :style="`background-color: ${item.color}`" />
 						<md-highlight-text
@@ -27,10 +60,11 @@
 			<md-list-item>
 				<md-autocomplete
 					v-model="selectedTracks"
-					:md-options="tracksArr"
+					:md-options="tracksArr.map(x=>({'id': x.id, 'name': x.name, 'toLowerCase': () => x.name.toLowerCase(), 'toString':() => x.name}))"
 					:md-fuzzy-search="false"
 				>
 					<label>Track</label>
+					<md-icon>keyboard_arrow_down</md-icon>
 					<template slot="md-autocomplete-item" slot-scope="{ item, term }">
 						<span class="color" :style="`background-color: ${item.color}`" />
 						<md-highlight-text
@@ -79,10 +113,12 @@ export default {
   data() {
     return {
       expandSingle: false,
-      selectedSeries: false,
-      selectedTracks: false,
+      selectedSeries: '',
+      selectedTracks: '',
       seriesArr: this.series,
-      tracksArr: this.tracks
+      tracksArr: this.tracks,
+      seriesChips: [],
+      tracksChips: []
     };
   },
   computed: {
@@ -90,18 +126,53 @@ export default {
       return this.showCurrentEvents ? 'Show all' : 'Show current';
     }
   },
+  watch: {
+    selectedSeries: function(val) {
+      if (val !== undefined && val.name && val.name.length) {
+        this.series.forEach(entry => {
+          if (entry.name === val.name) {
+            this.seriesChips.push(val);
+            let index = this.seriesArr.findIndex(serie => serie.id == val.id);
+            this.seriesArr.splice(index, 1);
+            this.selectedSeries = {
+              id: '',
+              name: '',
+              toLowerCase: () => '',
+              toString: () => ''
+            };
+          }
+        });
+      }
+    },
+    selectedTracks: function(val) {
+      if (val !== undefined && val.name && val.name.length) {
+        this.tracks.forEach(entry => {
+          if (entry.name === val.name) {
+            this.tracksChips.push(val);
+            let index = this.tracksArr.findIndex(track => track.id == val.id);
+            this.tracksArr.splice(index, 1);
+            this.selectedTracks = {
+              id: '',
+              name: '',
+              toLowerCase: () => '',
+              toString: () => ''
+            };
+          }
+        });
+      }
+    }
+  },
   methods: {
-    // createEvent: function() {
-    // 	this.$root.$emit('toggleCrudEvent');
-    // },
-    // createSeries: function() {
-    // 	this.$root.$emit('toggleCrudSeries');
-    // },
-    // createTrack: function() {
-    // 	this.$root.$emit('toggleCrudTrack');
-    // },
     toggleCurrentEvents: function() {
       this.$root.$emit('toggleCurrentEvents');
+    },
+    removeSerieChip: function(serie, index) {
+      this.seriesChips.splice(index, 1);
+      this.seriesArr.push(serie);
+    },
+    removeTrackChip: function(track, index) {
+      this.tracksChips.splice(index, 1);
+      this.tracksArr.push(track);
     }
   }
 };
@@ -119,11 +190,44 @@ export default {
   padding-right: 1.5em;
   padding-left: 1.5em;
 
+  h1,
+  h2,
+  h3,
+  .chips {
+    border-bottom-color: white;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+
+  .chips {
+    padding-bottom: 10px;
+  }
+
   h1 {
     font-weight: 600;
+    padding-bottom: 10px;
   }
+
+  h2,
+  h3 {
+    font-weight: 400;
+    padding-bottom: 5px;
+  }
+
+  .serieChipContainer,
+  .trackChipContainer {
+    margin-left: 1em;
+  }
+
   .md-list {
     background-color: transparent;
   }
+}
+
+.md-chip.md-theme-default {
+  background-color: transparent;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
 }
 </style>

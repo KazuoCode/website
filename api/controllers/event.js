@@ -38,7 +38,7 @@ module.exports.createEvent = (req, res) => {
 							['startdate', 'ASC'],
 							[db.EventSession, 'starttime', 'ASC']
 						]
-					})
+					});
 		}).then(event => {
 			res.json(event.get({plain:true}));
 		}, err => {
@@ -92,7 +92,7 @@ module.exports.updateEvent = (req, res) => {
 							['startdate', 'ASC'],
 							[db.EventSession, 'starttime', 'ASC']
 						]
-					})
+					});
 		}).then(event => {
 			res.json(event.get({plain:true}));
 		}, err => {
