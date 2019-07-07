@@ -2,6 +2,8 @@
 <div class="md-layout">
 	<FilterPanel
 		:show-current-events="showCurrentEvents"
+		:series="data.series"
+		:tracks="data.tracks"
 	/>
 
 	<div class="md-layout-item flex-start">
