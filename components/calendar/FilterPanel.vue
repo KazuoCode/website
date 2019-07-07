@@ -180,7 +180,6 @@ export default {
 
 <style lang="scss">
 @import "~assets/scss/main.scss";
-
 .filter {
   font-family: $default-family;
   border-width: 1px;
