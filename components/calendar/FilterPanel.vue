@@ -246,6 +246,10 @@ export default {
     border-bottom-color: white;
   }
 
+  .md-chip {
+    margin-bottom: 5px;
+  }
+
   .autoLabel {
     color: white !important;
     font-size: 0.75vw !important;

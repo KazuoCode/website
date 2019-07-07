@@ -143,6 +143,7 @@ export default {
       toLowerCase: () => tz_desc.toLowerCase(),
       toString: () => '(UTC' + moment.tz(tz_name).format('Z') + ') ' + tz_desc
     };
+    this.filterEvents();
   },
   methods: {
     /*
@@ -165,7 +166,7 @@ export default {
           }
         });
       } else {
-        return this.data.event;
+        this.eventsToShow = this.data.events;
       }
     },
     serieFilter: function(event, filters) {
@@ -194,8 +195,3 @@ export default {
   padding: 1em;
 }
 </style>
-
-    function undefined({}) {
-      return ();
-    }
-  
