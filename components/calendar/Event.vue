@@ -1,17 +1,20 @@
 <template>
-<div class="md-layout-item md-size-50">
+<div class="md-layout-item md-size-33">
 	<md-card>
 		<md-card-header>
-			<div class="logo">
-				<img :src="eventLogo" alt="Logo" />
-			</div>
+			<md-card-media md-medium>
+				<div>
+					<img :src="eventLogo" alt="Logo" />
+				</div>
+			</md-card-media>
 			<md-card-header-text>
 				<h1 class="md-title">
 					{{ event.Series.name }}
 				</h1>
 				<div class="line" />
 				<h2 class="md-subhead">
-					{{ event.name }}
+					{{ event.name }} <br />
+					{{ event.Track.name }}, {{ event.Track.country }}
 				</h2>
 			</md-card-header-text>
 		</md-card-header>
@@ -20,52 +23,23 @@
 		</h2>
 		<md-list v-if="event.SupportSeries.length > 0">
 			<h2>Support Series:</h2>
-			<md-list-item v-for="ss in event.SupportSeries" :key="ss.id">
-				<md-icon>
-					keyboard_arrow_right
-				</md-icon>
+			<md-list-item v-for="ss in prioritySupportSeries(event)" :key="ss.id">
+				<md-icon>keyboard_arrow_right</md-icon>
 				<span class="md-list-item-text">{{ ss.Series.name }}</span>
 			</md-list-item>
 		</md-list>
-		<md-card-actions>
-			<md-button>Action</md-button>
+		<md-list v-if="event.SupportSeries.length === 0">
+			<h2>Official Website</h2>
+			<md-list-item>
+				<md-icon>keyboard_arrow_right</md-icon>
+				<span class="md-list-item-text"><a :href="event.Series.homepage">{{ event.Series.name }}</a></span>
+			</md-list-item>
+		</md-list>
+		<md-card-actions class="md-alignment-left">
+			<md-button>Show Details</md-button>
 		</md-card-actions>
 	</md-card>
 </div>
-<!--<md-card>
-		<md-card-header>
-			<md-card-header-text>
-				<div class="md-title">
-					{{ event.name }}
-				</div>
-				<div class="md-subhead">
-					{{ event.Track.name }}
-				</div>
-				<div class="md-subhead">
-					{{ startdate }} - {{ enddate }}<br />
-					({{ event.Track.timezone }}, UTC{{ offset }})
-				</div>
-				<div class="md-subhead">
-					Priority: {{ event.priority }}
-				</div>
-				<div v-if="event.SupportSeries.length > 0" class="md-subhead">
-					SupportSeries: <span v-for="ss in event.SupportSeries" :key="ss.id">{{ ss.Series.name }},</span>
-				</div>
-			</md-card-header-text>
-
-			<md-card-media>
-				<img :src="eventLogo" alt="Logo" />
-			</md-card-media>
-		</md-card-header>
-		<md-card-content>
-
-		</md-card-content>
-		<md-card-actions>
-			<md-button @click.native="toggleSessions()">
-				Show sessions
-			</md-button>
-		</md-card-actions>
-  </md-card>-->
 </template>
 
 <script>
@@ -103,21 +77,30 @@ export default {
     }
   },
   methods: {
-    // addEventSession: function() {
-    // 	this.$root.$emit('addEventSession', this.event);
-    // },
     toggleSessions: function() {
       this.$root.$emit('toggleSessions', this.event);
+    },
+    prioritySupportSeries: function(event) {
+        return event.SupportSeries.sort((a, b) => {
+          if(a.Series.priority < b.Series.priority) return -1;
+        if(a.Series.priority > b.Series.priority) return 1;
+        return 0;
+      });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-@import '~assets/scss/main.scss';
+@import "~assets/scss/main.scss";
+
+.md-layout-item {
+  height: 30vh;
+}
 
 .md-card {
   width: 95%;
+  height: 95%;
   margin: 16px;
   display: inline-block;
   vertical-align: top;
@@ -125,6 +108,18 @@ export default {
   border-width: 1px;
   border-style: solid;
   border-radius: 25px;
+  background: radial-gradient(#e6646500, #00000044) !important;
+
+  .md-card-header {
+    height: 12em;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+  }
+
+  .md-subhead {
+    margin-top: 5px;
+  }
 
   .md-card-header,
   .dates {
@@ -137,21 +132,17 @@ export default {
   .dates {
     display: flex;
     justify-content: center;
-    margin-top: .5em;
-    padding-bottom: .5em; 
-  }
-
-  .logo {
-    width: 8em;
-    height: auto;
+    margin-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-bottom: 0;
   }
 
   .md-card-header-text {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-content: center;
-  margin-left: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-left: 1em;
   }
 
   .line {
@@ -160,16 +151,45 @@ export default {
     width: 75%;
   }
 
-  .md-icon.md-theme-default {
-    background-image: $default-gradient;
-    background-clip: text;
-    color: transparent;
-    font-size: 2.5em !important;
+  .md-card-media {
+    display: flex;
+    align-items: center;
+    div {
+      height: max-content;
+    }
   }
 
-  .md-list-item-text {
-    font-size: 1.5em;
+  .md-list {
+    background-color: transparent;
+    max-height: 10em !important;
+    height: 8em;
+
+    h2 {
+      margin-left: 1em;
+      margin-top: 0.25em;
+      margin-bottom: 0;
+    }
+
+    .md-list-item-text {
+      font-size: 1.25em;
+    }
+
+    .md-icon.md-theme-default {
+      background-image: $default-gradient;
+      background-clip: text;
+      color: transparent;
+      font-size: 2em !important;
+      margin-right: 0;
+    }
+
+    .md-list-item {
+      margin-left: 2em;
+      height: 2.5em;
+    }
   }
 
+  .md-card-actions {
+    margin-left: 1em;
+  }
 }
 </style>

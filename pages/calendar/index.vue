@@ -47,14 +47,14 @@
 		</div>
 	</div>
 
-	<SidePanel :event="activeEvent" :show-event="showEvent" :user-timezone="userTimezone" />
+	<!--<SidePanel :event="activeEvent" :show-event="showEvent" :user-timezone="userTimezone" />-->
 </div>
 </template>
 
 <script>
 import Event from '~/components/calendar/Event.vue';
 import FilterPanel from '~/components/calendar/FilterPanel.vue';
-import SidePanel from '~/components/calendar/SidePanel.vue';
+//import SidePanel from '~/components/calendar/SidePanel.vue';
 
 import moment from 'moment-timezone';
 
@@ -62,7 +62,7 @@ export default {
   components: {
     Event,
     FilterPanel,
-    SidePanel
+    //SidePanel
   },
   data: function() {
     return {
