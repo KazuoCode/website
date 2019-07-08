@@ -1,5 +1,5 @@
 <template>
-<div class="md-layout-item md-size-20 sidepanel">
+<div class="md-layout-item sidepanel">
 	<div v-if="showEvent" class="sessions">
 		<md-icon class="md-size-2x" @click.native="toggleSessions()">
 			arrow_back

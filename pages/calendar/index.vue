@@ -1,11 +1,30 @@
 <template>
-<div class="md-layout">
-	<FilterPanel
-		:show-current-events="showCurrentEvents"
-		:series="data.series"
-		:tracks="data.tracks"
-	/>
-
+<div class="wrapper">
+	<div class="header md-layout" />
+	<div class="content md-layout">
+		<div class="md-layout">
+			<FilterPanel
+				:show-current-events="showCurrentEvents"
+				:series="data.series"
+				:tracks="data.tracks"
+			/>
+			<div class="md-layout-item md-size-80 cards">
+				<Event
+					v-for="event in eventsToShow"
+					:key="event.id"
+					:event="event"
+					:tz="data.tz"
+					:active-event="activeEvent"
+				/>
+			</div>
+			<div class="md-layout-item md-size-25" style="display: none;">
+				<SidePanel :event="activeEvent" :show-event="showEvent" :user-timezone="userTimezone" />
+			</div>
+		</div>
+	</div>
+</div>
+<!--
+	
 	<div class="md-layout-item flex-start">
 		<div class="headline">
 			<span class="md-display-1">{{ headline }}</span>
@@ -25,8 +44,8 @@
 			<label>Local Timezone</label>
 
 			<template slot="md-autocomplete-item" slot-scope="{ item }">
-				<!-- <span class="color" :style="`background-color: ${item.color}`"></span> -->
-				<!-- <md-highlight-text :md-term="tzDisplay(item)">{{ tzDisplay(item) }}</md-highlight-text> -->
+				<!- <span class="color" :style="`background-color: ${item.color}`"></span> ->
+				<!- <md-highlight-text :md-term="tzDisplay(item)">{{ tzDisplay(item) }}</md-highlight-text> ->
 				{{ tzDisplay(item) }}
 			</template>
 
@@ -47,14 +66,13 @@
 		</div>
 	</div>
 
-	<!--<SidePanel :event="activeEvent" :show-event="showEvent" :user-timezone="userTimezone" />-->
-</div>
+  <!-<SidePanel :event="activeEvent" :show-event="showEvent" :user-timezone="userTimezone" />-->
 </template>
 
 <script>
 import Event from '~/components/calendar/Event.vue';
 import FilterPanel from '~/components/calendar/FilterPanel.vue';
-//import SidePanel from '~/components/calendar/SidePanel.vue';
+import SidePanel from '~/components/calendar/SidePanel.vue';
 
 import moment from 'moment-timezone';
 
@@ -62,7 +80,7 @@ export default {
   components: {
     Event,
     FilterPanel,
-    //SidePanel
+    SidePanel
   },
   data: function() {
     return {
@@ -161,7 +179,10 @@ export default {
     filterEvents: function(filters) {
       if (filters !== undefined) {
         this.eventsToShow = this.data.events.filter(event => {
-          if (this.serieFilter(event, filters) && this.trackFilter(event, filters)) {
+          if (
+            this.serieFilter(event, filters) &&
+            this.trackFilter(event, filters)
+          ) {
             return event;
           }
         });
@@ -171,27 +192,22 @@ export default {
     },
     serieFilter: function(event, filters) {
       if (filters.series.length !== 0) {
-        return filters.series.map(x => x.id).includes(event.Series.id) === true ? true : false;
+        return filters.series.map(x => x.id).includes(event.Series.id) === true
+          ? true
+          : false;
       } else {
         return true;
       }
     },
     trackFilter: function(event, filters) {
       if (filters.tracks.length !== 0) {
-        return filters.tracks.map(x => x.id).includes(event.Track.id ) === true ? true : false;
+        return filters.tracks.map(x => x.id).includes(event.Track.id) === true
+          ? true
+          : false;
       } else {
         return true;
-      } 
+      }
     }
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.flex-start {
-  align-content: flex-start;
-}
-.headline {
-  padding: 1em;
-}
-</style>

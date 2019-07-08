@@ -1,0 +1,32 @@
+.wrapper {
+    height: 93vh;
+    margin-right: 10em;
+    margin-left: 10em;
+
+    .header {
+        height: 25%;
+    }
+
+    .content {
+        height: 75%;
+
+        .md-layout {
+            height: 100%;
+        }
+
+        .md-layout-item {
+            height: 100%;
+
+            
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+        }
+
+    }
+
+}
+

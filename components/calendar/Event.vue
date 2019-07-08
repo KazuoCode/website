@@ -1,5 +1,5 @@
 <template>
-<div class="md-layout-item md-size-33">
+<div class="card md-size-33">
 	<md-card>
 		<md-card-header>
 			<md-card-media md-medium>
