@@ -36,7 +36,9 @@
 			</md-list-item>
 		</md-list>
 		<md-card-actions class="md-alignment-left">
-			<md-button>Show Details</md-button>
+			<md-button @click="eventDetail(event)">
+				Show Details
+			</md-button>
 		</md-card-actions>
 	</md-card>
 </div>
@@ -77,15 +79,18 @@ export default {
     }
   },
   methods: {
-    toggleSessions: function() {
+    /*toggleSessions: function() {
       this.$root.$emit('toggleSessions', this.event);
-    },
+    },*/
     prioritySupportSeries: function(event) {
         return event.SupportSeries.sort((a, b) => {
           if(a.Series.priority < b.Series.priority) return -1;
         if(a.Series.priority > b.Series.priority) return 1;
         return 0;
       });
+    },
+    eventDetail: function(event) {
+      this.$root.$emit('eventDetail', event);
     }
   }
 };

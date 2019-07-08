@@ -17,8 +17,8 @@
 					:active-event="activeEvent"
 				/>
 			</div>
-			<div class="md-layout-item md-size-25" style="display: none;">
-				<SidePanel :event="activeEvent" :show-event="showEvent" :user-timezone="userTimezone" />
+			<div class="md-layout-item md-size-25 details" style="display: none;">
+				<SidePanel :event="activeEvent" :show-event="activeDetails" :user-timezone="userTimezone" />
 			</div>
 		</div>
 	</div>
@@ -87,6 +87,7 @@ export default {
       data: [],
       showCurrentEvents: true,
       activeEvent: null,
+      activeDetails: false,
       showEvent: false,
       userTimezone: {
         name: '',
@@ -133,15 +134,14 @@ export default {
       this.showCurrentEvents = !this.showCurrentEvents;
     });
     this.$root.$on('toggleSessions', event => {
-      if (!this.showEvent) {
-        this.showEvent = true;
-        this.activeEvent = event;
+      if (this.activeDetails) {
+        this.closeDetailPanel();
       } else {
-        this.showEvent = false;
-        this.activeEvent = null;
+        this.detailPanel(event);
       }
     });
     this.$root.$on('filterCalendar', filters => this.filterEvents(filters));
+    this.$root.$on('eventDetail', event => this.detailPanel(event));
     // Set the initial timezone, load from cookie if possible
     let tz_name = 'Europe/Brussels';
     if (
@@ -206,6 +206,35 @@ export default {
           : false;
       } else {
         return true;
+      }
+    },
+    detailPanel: function(event){
+      if(!this.activeDetails){
+        // Adjust layout to accomodate the details panel
+        let cardDiv = document.getElementsByClassName('cards')[0];
+        cardDiv.style['grid-template-columns'] = '1fr 1fr';
+        cardDiv.classList.replace('md-size-80', 'md-size-55');
+
+        // Show details panel
+        document.getElementsByClassName('details')[0].style.display = 'unset';
+        this.activeDetails = true;
+        
+        // Pass event data
+        this.activeEvent = event;
+      } else {
+        this.activeEvent = event;
+      }
+    },
+    closeDetailPanel: function(){
+      if(this.activeDetails){
+        // Adjust layout removing the detail panel
+        let cardDiv = document.getElementsByClassName('cards')[0];
+        cardDiv.style['grid-template-columns'] = '1fr 1fr 1fr';
+        cardDiv.classList.replace('md-size-55', 'md-size-80');
+
+        // Removes the details panel
+        document.getElementsByClassName('details')[0].style.display = 'none';
+        this.activeDetails = false;
       }
     }
   }
