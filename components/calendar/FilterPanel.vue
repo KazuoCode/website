@@ -1,13 +1,16 @@
 <template>
 <div class="md-layout-item md-size-20 filter">
-	<div class="filterheader">
-		<h1>Filter</h1>
-		<md-button @click="clearAll()">
-			Clear All
-		</md-button>
-	</div>
+	<h1>Filter</h1>
 	<div v-if="seriesChips.length !== 0 || tracksChips.length !== 0" class="chips">
-		<h2>Active Filters</h2>
+		<div class="filterheader">
+			<h2>Active Filters</h2>
+			<md-button
+				v-if="seriesChips.length !== 0 || tracksChips.length !== 0"
+				@click="clearAll()"
+			>
+				Clear All
+			</md-button>
+		</div>
 		<div class="serieChipContainer">
 			<h3 v-if="seriesChips.length !== 0">
 				Series
@@ -187,7 +190,7 @@ export default {
         tracks: this.tracksChips
       });
     },
-    clearAll: function(){
+    clearAll: function() {
       this.seriesChips = [];
       this.tracksChips = [];
       this.seriesArr = this.series;
