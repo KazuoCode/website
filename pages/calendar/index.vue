@@ -18,7 +18,7 @@
 				/>
 			</div>
 			<div class="md-layout-item md-size-25 details" style="display: none;">
-				<SidePanel :event="activeEvent" :show-event="activeDetails" :user-timezone="userTimezone" />
+				<DetailsPanel :event="activeEvent" :show-event="activeDetails" :user-timezone="userTimezone" />
 			</div>
 		</div>
 	</div>
@@ -72,7 +72,7 @@
 <script>
 import Event from '~/components/calendar/Event.vue';
 import FilterPanel from '~/components/calendar/FilterPanel.vue';
-import SidePanel from '~/components/calendar/SidePanel.vue';
+import DetailsPanel from '~/components/calendar/DetailsPanel.vue';
 
 import moment from 'moment-timezone';
 
@@ -80,15 +80,24 @@ export default {
   components: {
     Event,
     FilterPanel,
-    SidePanel
+    DetailsPanel
   },
   data: function() {
     return {
       data: [],
       showCurrentEvents: true,
-      activeEvent: null,
+      activeEvent: {
+							'name':'',
+							'logo':'',
+							'Track': {
+								'name': '',
+								'country': ''
+              },
+              'Series': {
+								'name': ''
+							},
+						},
       activeDetails: false,
-      showEvent: false,
       userTimezone: {
         name: '',
         desc: ''
