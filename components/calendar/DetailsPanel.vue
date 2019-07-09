@@ -1,5 +1,5 @@
 <template>
-<md-card class= "sidepanel">
+<md-card class="sidepanel">
 	<md-card-header>
 		<md-card-media md-medium>
 			<div>
